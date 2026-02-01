@@ -13,7 +13,8 @@ const allowedOrigins = [
   'http://127.0.0.1:5173',
   'http://127.0.0.1:3000',
   'https://yourdomain.com',
-  'https://tpcvotingprivate.vercel.app'
+  'https://tpcvotingprivate.vercel.app',
+  'https://tpcvoting.vercel.app'
 ];
 
 app.use(cors({

@@ -92,8 +92,7 @@ app.post('/api/polls/create', (req, res) => {
       options: cleanedOptions,
       votes: cleanedOptions.map(() => 0), // Initialize vote count for each option
       status: 'active', // 'active' or 'closed'
-      createdAt: new Date().toISOString(),
-      voters: new Set() // Track who has voted (using IP or sessionID)
+      createdAt: new Date().toISOString()
     };
 
     res.status(201).json({
@@ -156,13 +155,13 @@ app.get('/api/polls/:pollId', (req, res) => {
 /**
  * POST /api/polls/:pollId/vote
  * Submit a vote for a poll
- * Body: { optionIndex: number, voterId?: string }
+ * Body: { optionIndex: number }
  * Returns: { success: boolean, message: string }
  */
 app.post('/api/polls/:pollId/vote', (req, res) => {
   try {
     const { pollId } = req.params;
-    const { optionIndex, voterId } = req.body;
+    const { optionIndex } = req.body;
 
     // Validate poll exists
     const result = getPollOrError(pollId);
@@ -191,18 +190,8 @@ app.post('/api/polls/:pollId/vote', (req, res) => {
       });
     }
 
-    // Check if user has already voted (using voterId or IP)
-    const uniqueVoterId = voterId || req.ip;
-    if (poll.voters.has(uniqueVoterId)) {
-      return res.status(400).json({
-        success: false,
-        message: 'You have already voted in this poll'
-      });
-    }
-
-    // Record vote
+    // Record vote (no voter tracking)
     poll.votes[optionIndex]++;
-    poll.voters.add(uniqueVoterId);
 
     res.json({
       success: true,
